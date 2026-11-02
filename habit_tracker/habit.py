@@ -20,6 +20,16 @@ class Habit:
             return False
         self.completed_dates.add(day)
         return True
+    
+    def current_streak(self, today):
+        """Consecutive days completed, ending today (or yesterday if
+        today is not done yet, since the day isn't over)."""
+        day = today if today in self.completed_dates else today - timedelta(days=1)
+        streak = 0
+        while day in self.completed_dates:
+            streak += 1
+            day -= timedelta(days=1)
+        return streak
 
     def to_dict(self):
         return {
