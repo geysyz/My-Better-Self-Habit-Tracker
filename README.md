@@ -3,6 +3,8 @@
 A command-line habit tracker that helps busy adults build routines by
 recording daily habits and showing their current streaks.
 
+Author: Geysa Tumea
+
 ## Purpose
 
 Users create habits (such as drinking water or reading), mark them done each
@@ -23,8 +25,8 @@ streak gives visible proof of progress to keep users motivated.
 ## Installation
 
 ```bash
-git clone https://github.com/[YOUR-USERNAME]/[YOUR-REPO].git
-cd [YOUR-REPO]
+git clone https://github.com/geysyz/My-Better-Self-Habit-Tracker.git
+cd My-Better-Self-Habit-Tracker
 ```
 
 No dependencies need to be installed. (`requirements.txt` is included and
@@ -65,10 +67,8 @@ first run.
 1. Run `python3 main.py` and choose **1**.
 2. Enter name `Drink water`, category `Health`, frequency `daily`.
 3. Choose **3**. The habit appears with a streak of 0.
-4. Try adding a habit with an empty name or only spaces. An error message
-   appears and nothing is added.
-5. Choose **4** to quit, run the program again, and choose **3**. The habit is
-   still there.
+4. Try adding a habit with an empty name or only spaces. An error message appears and nothing is added.
+5. Choose **4** to quit, run the program again, and choose **3**. The habit is still there.
 
 **2. Mark a habit done (US-02)**
 1. Choose **2** and select "Drink water". It is marked done for today.
@@ -84,8 +84,7 @@ first run.
    ```bash
    HABIT_TODAY=2026-11-05 python3 main.py
    ```
-3. Choose **3**. Expected streaks: [fill in from your sample file, e.g.
-   "Drink water" = 3, "Read a book" = 0 because of a gap].
+3. Choose **3**. Expected streaks: "Drink water" = 3, "Read a book" = 0 because of a gap
 
 ## Project structure
 
