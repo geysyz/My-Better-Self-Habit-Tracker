@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment files with secrets (use .env.example instead)
+.env
+
+# Your personal habit data (the sample file IS committed)
+data/habits.json
+
+# Editor and OS files
+.vscode/
+.idea/
+.DS_Store
