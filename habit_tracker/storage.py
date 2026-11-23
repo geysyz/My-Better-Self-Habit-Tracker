@@ -12,3 +12,11 @@ class HabitStorage(ABC):
     @abstractmethod
     def save(self, habits):
         """Persist the given list of Habit objects."""
+
+    @abstractmethod
+    def load_periods(self):
+        """Return a list of ExcusedPeriod objects."""
+
+    @abstractmethod
+    def save_periods(self, periods):
+        """Persist the given list of ExcusedPeriod objects."""
