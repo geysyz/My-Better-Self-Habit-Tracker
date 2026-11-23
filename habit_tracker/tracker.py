@@ -2,6 +2,7 @@ import os
 from datetime import date
 
 from .habit import Habit
+from .storage import HabitStorage
 
 VALID_FREQUENCIES = ("daily", "weekly")
 
@@ -21,6 +22,7 @@ class HabitTracker:
     """Application logic. Never prints; returns values and messages."""
 
     def __init__(self, repository):
+        """repository is any HabitStorage"""
         self.repository = repository
         self.habits = repository.load()
 

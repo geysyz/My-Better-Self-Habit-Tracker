@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Better Self</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 760px; margin: 2rem auto; padding: 0 1rem; }
+    .habit { display: flex; justify-content: space-between; align-items: center;
+             border: 1px solid #ccc; border-radius: 8px; padding: .75rem 1rem; margin: .5rem 0; }
+    .done { background: #e8f6ec; }
+    .ok { color: #1a7f37; } .error { color: #b42318; }
+    .streak { font-weight: bold; }
+    form.inline { display: inline; }
+  </style>
+</head>
+<body>
+  <h1>My Better Self</h1>
+  <p>Today: {{ today.isoformat() }}</p>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+      <p class="{{ category }}">{{ message }}</p>
+    {% endfor %}
+  {% endwith %}
+
+  <h2>Add a habit</h2>
+  <form method="post" action="{{ url_for('add_habit') }}">
+    <input name="name" placeholder="Habit name">
+    <input name="category" placeholder="Category">
+    <select name="frequency">
+      <option value="daily">daily</option>
+      <option value="weekly">weekly</option>
+    </select>
+    <button type="submit">Add</button>
+  </form>
+
+  <h2>Your habits</h2>
+  {% for row in rows %}
+    <div class="habit {{ 'done' if row.done }}">
+      <div>
+        <strong>{{ row.habit.name }}</strong>
+        <small>{{ row.habit.category }} · {{ row.habit.frequency }}</small><br>
+        <span class="streak">
+          {% if row.streak is none %}Streak: n/a (weekly){% else %}Streak: {{ row.streak }} day(s){% endif %}
+        </span>
+      </div>
+      <div>
+        {% if row.done %}Done today
+        {% else %}
+          <form class="inline" method="post" action="{{ url_for('mark_done', habit_id=row.habit.id) }}">
+            <button type="submit">Done</button>
+          </form>
+        {% endif %}
+      </div>
+    </div>
+  {% else %}
+    <p>No habits yet. Add one above.</p>
+  {% endfor %}
+</body>
+</html>
