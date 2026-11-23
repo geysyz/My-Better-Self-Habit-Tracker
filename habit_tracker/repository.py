@@ -2,9 +2,10 @@ import json
 import os
 
 from .habit import Habit
+from .storage import HabitStorage
 
 
-class HabitRepository:
+class HabitRepository(HabitStorage):
     """Loads and saves habits to a JSON file."""
 
     def __init__(self, path):
