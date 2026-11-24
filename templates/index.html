@@ -35,6 +35,22 @@
     <button type="submit">Add</button>
   </form>
 
+    <h2>Excused periods (vacation, rest, events)</h2>
+  <form method="post" action="{{ url_for('add_excused') }}">
+    <input name="reason" placeholder="Reason (e.g., Vacation)">
+    <input type="date" name="start"> to <input type="date" name="end">
+    <button type="submit">Add</button>
+  </form>
+  <ul>
+    {% for p in periods %}
+      <li>{{ p.reason }}: {{ p.start_date }} to {{ p.end_date }}
+        <form class="inline" method="post" action="{{ url_for('delete_excused', period_id=p.id) }}">
+          <button type="submit">Remove</button>
+        </form>
+      </li>
+    {% else %}<li>None logged.</li>{% endfor %}
+  </ul>
+
   <h2>Your habits</h2>
   {% for row in rows %}
     <div class="habit {{ 'done' if row.done }}">
