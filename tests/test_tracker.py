@@ -26,3 +26,17 @@ def test_mark_done_twice_is_rejected():
     assert tracker.mark_done(habit.id, TODAY)[0] is True
     ok, message = tracker.mark_done(habit.id, TODAY)
     assert ok is False and "already done" in message
+
+def test_add_excused_period_is_saved():
+    storage = FakeStorage()
+    tracker = HabitTracker(storage)
+    period, error = tracker.add_excused_period(
+        date(2026, 11, 11), date(2026, 11, 13), "Vacation", TODAY)
+    assert error is None and len(storage.periods) == 1
+
+
+def test_invalid_period_is_not_saved():
+    storage = FakeStorage()
+    period, error = HabitTracker(storage).add_excused_period(
+        date(2026, 11, 13), date(2026, 11, 11), "Vacation", TODAY)
+    assert period is None and storage.periods == []

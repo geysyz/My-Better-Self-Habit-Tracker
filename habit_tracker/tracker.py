@@ -3,6 +3,7 @@ from datetime import date
 
 from .habit import Habit
 from .storage import HabitStorage
+from .excuse import ExcusePolicy, ExcusedPeriod
 
 VALID_FREQUENCIES = ("daily", "weekly")
 
@@ -21,10 +22,11 @@ def get_today():
 class HabitTracker:
     """Application logic. Never prints; returns values and messages."""
 
-    def __init__(self, repository):
-        """repository is any HabitStorage"""
+    def __init__(self, repository, policy=None):
         self.repository = repository
+        self.policy = policy or ExcusePolicy()
         self.habits = repository.load()
+        self.periods = repository.load_periods()
 
     def list_habits(self):
         return list(self.habits)
@@ -61,3 +63,32 @@ class HabitTracker:
             return False, f"'{habit.name}' is already done today."
         self.repository.save(self.habits)
         return True, f"'{habit.name}' marked done for {today.isoformat()}."
+
+    def list_periods(self):
+        return sorted(self.periods, key=lambda p: p.start_date)
+
+    def add_excused_period(self, start, end, reason, today):
+        """Returns (period, None) or (None, error_message)."""
+        if start is None or end is None:
+            return None, "Please enter valid start and end dates."
+        error = self.policy.validate(start, end, reason, today, self.periods)
+        if error:
+            return None, error
+        next_id = max((p.id for p in self.periods), default=0) + 1
+        period = ExcusedPeriod(next_id, start, end, reason.strip())
+        self.periods.append(period)
+        self.repository.save_periods(self.periods)
+        return period, None
+
+    def delete_excused_period(self, period_id):
+        for p in self.periods:
+            if p.id == period_id:
+                self.periods.remove(p)
+                self.repository.save_periods(self.periods)
+                return True, "Excused period deleted."
+        return False, "No excused period with that number."
+
+    def excuse_warning(self, today):
+        if self.policy.should_warn(self.periods, today):
+            return "Heads up: you've logged more than 14 excused days recently."
+        return None

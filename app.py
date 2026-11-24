@@ -23,7 +23,7 @@ def create_app(tracker=None, today_fn=get_today):
         for h in tracker.list_habits():
             streak = h.current_streak(today) if h.frequency == "daily" else None
             rows.append({"habit": h, "streak": streak, "done": h.is_done_on(today)})
-        return render_template("index.html", rows=rows, today=today)
+        return render_template("index.html", rows=rows, today=today, periods=tracker.list_periods())
 
     @app.post("/habits")
     def add_habit():
@@ -41,7 +41,33 @@ def create_app(tracker=None, today_fn=get_today):
         flash(message, "ok" if ok else "error")
         return redirect(url_for("index"))
 
+    def parse_date(text):
+        try:
+            return date.fromisoformat(text)
+        except ValueError:
+            return None
+
+    @app.post("/excused")
+    def add_excused():
+        today = today_fn()
+        period, error = tracker.add_excused_period(
+            parse_date(request.form.get("start", "")),
+            parse_date(request.form.get("end", "")),
+            request.form.get("reason", ""), today)
+        flash(error or "Excused period added.", "error" if error else "ok")
+        if period and tracker.excuse_warning(today):
+            flash(tracker.excuse_warning(today), "error")
+        return redirect(url_for("index"))
+
+    @app.post("/excused/<int:period_id>/delete")
+    def delete_excused(period_id):
+        ok, message = tracker.delete_excused_period(period_id)
+        flash(message, "ok" if ok else "error")
+        return redirect(url_for("index"))
+
     return app
+
+
 
 
 if __name__ == "__main__":
